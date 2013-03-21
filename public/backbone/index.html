@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disney World Unleashed</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<div class="container">
+
+    <div class="page-header">
+        <div class="header-logo"></div>
+        <p>Dis On A Dime presents</p>
+        <h1>Disney World Unleashed <small>Learn about your favorite attractions</small></h1>
+    </div>
+
+    <div class="page"></div>
+</div>
+
+<!--Templates-->
+<script type="text/template" id="park-list-template">
+    <ul class="breadcrumb">
+        <li class="active">Home</li>
+    </ul>
+    <div class="row">
+        <div class="span4">
+            <h2>Parks</h2>
+            <ul class="unstyled">
+                <% _.each(parks, function(park) { %>
+                <li><a href="#/<%= park.permalink %>"><%=park.name %></a></li>
+                <% }); %>
+            </ul>
+        </div>
+        <div class="span4">
+            <h2>Hotels</h2>
+            <p>Coming soon...</p>
+        </div>
+        <div class="span4">
+            <h2>Dining</h2>
+            <p>Coming soon...</p>
+        </div>
+
+    </div>
+
+</script>
+
+
+<script type="text/template" id="attraction-list-template">
+    <ul class="breadcrumb">
+        <li><a href="#">Home</a> <span class="divider">/</span></li>
+        <li class="active"><%=park.name %></li>
+    </ul>
+    <h2><%=park.name %></h2>
+    <ul>
+        <% _.each(attractions, function(attraction) { %>
+        <li><a href="#/<%= park.permalink %>/<%= attraction.permalink %>"><%=attraction.name%></a></li>
+        <% }); %>
+    </ul>
+</script>
+
+<script type="text/template" id="attraction-detail-template">
+    <ul class="breadcrumb">
+        <li><a href="#">Home</a> <span class="divider">/</span></li>
+        <li><a href="#/<%=park.permalink %>"><%=park.name %></a> <span class="divider">/</span></li>
+        <li class="active"><%=attraction.name %></li>
+    </ul>
+
+    <div id="attraction-header">
+        <div class="row">
+            <div class="span9"><h2><%=attraction.name %></h2></div>
+        </div>
+    </div>
+
+    <!--Carousel-->
+    <div class="attraction-body">
+        <div class="attraction-container row">
+            <div id="myCarousel" class="carousel slide span4">
+                <div class="carousel-inner">
+                    <div class="active item"><img class="attraction" src="<%=images[0].url %>"/></div>
+                    <% images = _.rest(images, [1]);
+                    _.each(images, function(image) { %>
+                    <div class="item"><img class="attraction" src="<%=image.url %>"/></div>
+                    <% }); %>
+                </div>
+            </div>
+            <div class="attraction-info span8" >
+                <dl class="dl-horizontal">
+                    <dt>Description</dt>
+                    <dd><%=attraction.what_it_is %></dd>
+                    <dt>Date Opened</dt>
+                    <dd><%=attraction.opened_on%></dd>
+                    <dt>Best Time to Ride</dt>
+                    <dd><%=attraction.when_to_go%></dd>
+                    <dt>Is it Scary?</dt>
+                    <dd><%= (attraction.frightening) ?'Yes':'No'%></dd>
+                    <dt>Must-see attraction?</dt>
+                    <dd><%= (attraction.not_to_be_missed) ?'Yes':'No'%></dd>
+                    <dt>Height Restriction</dt>
+                    <dd><%= (attraction.height_restriction) ? attraction.height_restriction + ' inches' : 'None'%></dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="attraction-comments-header row">
+            <div class="span3"><h4>Attraction Comments:</h4></div>
+            <div class="span3 offset6">
+                <a href="#commentsModal" role="button" class="btn" data-toggle="modal">Add Comment</a>
+            </div>
+        </div>
+        <hr class="section-separator"/>
+        <div class="comments-body">
+            <% _.each(attraction.comments, function(comment) {
+                var email = comment.email.split('@');
+            %>
+            <ul class="unstyled">
+                <li><strong>User:</strong> <%=email[0]%></li>
+                <li><strong>Rating:</strong> <%=comment.score%> out of 5</li>
+                <li><strong>Comment:</strong> <%=comment.details%></li>
+            </ul>
+            <hr/>
+        </div>
+        <% }); %>
+    </div>
+
+    <!-- Modal -->
+    <div id="commentsModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="commentHeader"
+         aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3 id="commentHeader">Add A Comment</h3>
+        </div>
+
+        <form class="add-comment-form">
+            <div class="modal-body">
+                <label>Email</label>
+                <input name="email" type="email" required placeholder="test@example.com">
+                <label>Attraction Rating</label>
+                <input name="score" type="number" max="5" min="0" required>
+                <label>Comment</label>
+                <textarea name="details" rows="4" required/>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save comment</button>
+            </div>
+        </form>
+
+    </div>
+
+</script>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.10/backbone-min.js"></script>
+<script src="js/libs/bootstrap.min.js"></script>
+<script src="js/controllers/imageController.js"></script>
+<script src="js/models/parks.js"></script>
+<script src="js/models/attraction.js"></script>
+<script src="js/models/attractionDetail.js"></script>
+<script src="js/models/comment.js"></script>
+<script src="js/views/parkListView.js"></script>
+<script src="js/views/attractionListView.js"></script>
+<script src="js/views/attractionDetailView.js"></script>
+<script src="js/routers/router.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
