@@ -148,3 +148,19 @@ To run tests once jasmine-node is installed:
     $ grunt
 
 Note that there is no need to start the app before running the tests.
+
+# Running the Backbone UI App
+
+Located under /backbone is a sample Backbone.js UI.  It showcases how you might possibly organize an app using the framework.
+The UI allows the user to select a park, select an attraction, and view details about an attraction.  It also allows the user
+to post a comment about the attraction.  This UI pulls images of the attraction using the [Flickr API](http://www.flickr.com/services/api/).
+
+Frameworks used:
+
+[Backbone.js](http://backbonejs.org/)
+
+[Underscore.js](http://underscorejs.org/)
+
+[Twitter Bootstrap](http://twitter.github.com/bootstrap/index.html)
+
+[jQuery](http://jquery.com/)
